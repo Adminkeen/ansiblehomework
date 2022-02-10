@@ -1,0 +1,21 @@
+---
+- hosts: nodes
+  remote_user: ansible
+  become: yes
+
+  tasks:
+   - name: net.ifnames=0
+     lineinfile:
+      path: /etc/default/grub
+      backrefs: yes
+      regexp: '^(GRUB_CMDLINE_LINUX=(?!.*ifnames)\"[^\"]+)(\".*)'
+      line: '\1 net.ifnames=0\2'
+   - name: biosdevname=0
+     lineinfile:
+      path: /etc/default/grub
+      backrefs: yes
+      regexp: '^(GRUB_CMDLINE_LINUX=(?!.*biosdevname)\"[^\"]+)(\".*)'
+      line: '\1 biosdevname=0\2'
+   - name: run grub2-mkconfig
+     command: grub2-mkconfig
+...
