@@ -1,0 +1,3 @@
+launch with this command:
+
+ansible-playbook playbook.yml --vault-password-file vault-pass
