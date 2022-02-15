@@ -1,0 +1,6 @@
+---
+- hosts: nodes
+  remote_user: ansible
+  become: yes
+  roles:
+   - httpd

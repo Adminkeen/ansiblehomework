@@ -1,0 +1,26 @@
+---
+# tasks file for httpd
+   - name: install httpd
+     yum:
+      name: httpd
+      state: present
+   - template:
+        src: index.html.j2
+        dest: /var/www/html/index.html
+     notify:
+      - run service httpd
+   - name: collect facts to check apache
+     service_facts:
+     register: services_state    
+   - name: check_apache
+     debug:
+       var: services_state.ansible_facts.services['httpd.service']
+   - name: open ports
+     firewalld:
+         port: '{{ item }}'
+         permanent: true
+         state: enabled
+     loop: 
+      - '{{ ports[0] }}/tcp'
+      - '{{ ports[1] }}/tcp'
+...

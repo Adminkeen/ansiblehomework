@@ -1,0 +1,6 @@
+---
+# vars file for httpd
+ports:
+ - 80
+ - 443
+
