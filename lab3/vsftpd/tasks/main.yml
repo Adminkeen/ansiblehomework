@@ -1,0 +1,42 @@
+---
+# tasks file for vsftpd
+- name: install packages
+  yum:
+    name: 
+      - vsftpd
+      - python3-libsemanage
+    state: present
+- template:
+   src: vsftpd.conf.j2
+   dest: /etc/vsftpd/vsftpd.conf
+- name: open ports
+  firewalld:
+     port: '{{ item }}'
+     permanent: true
+     state: enabled
+  loop:
+   - 20-21/tcp
+- name: Create ftp pub folder
+  file:
+    path: /var/ftp/pub
+    state: directory
+    mode: 0755
+- name: Creafe ftp upload folder
+  file:
+    path: /var/ftp/pub/upload
+    state: directory
+    mode: 0777
+- name: SELinux configure
+  seboolean:
+    name: ftpd_full_access
+    state: yes
+    persistent: yes
+- name: Configure SElinux for upload
+  seboolean:
+    name: ftpd_anon_write
+    state: true
+    persistent: yes
+- name: run service vsftpd
+  systemd:
+   name: vsftpd
+   state: started
